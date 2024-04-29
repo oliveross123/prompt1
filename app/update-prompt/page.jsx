@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, Suspense, useSearchParams } from "next/navigation"; // Correct import for useSearchParams
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from 'react'
 
 import Form from "@components/Form";
 
@@ -9,8 +10,22 @@ const UpdatePrompt = () => {
   const router = useRouter();
   
   // Wrap the useSearchParams() hook with a Suspense boundary
-  const searchParams = useSearchParams();
+  const Search = () => {
+    const searchParams = useSearchParams()
+   
+    return <input placeholder="Search..." />
+  }
 
+  const Searchbar = () => {
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <Search />
+      </Suspense>
+    )
+  }
+
+  // Retrieve promptId inside the component
+  const searchParams = useSearchParams();
   const promptId = searchParams.get("id");
 
   const [post, setPost] = useState({ prompt: "", tag: "" });
@@ -18,15 +33,20 @@ const UpdatePrompt = () => {
 
   useEffect(() => {
     const getPromptDetails = async () => {
-      const response = await fetch(`/api/prompt/${promptId}`);
-      const data = await response.json();
+      try {
+        const response = await fetch(`/api/prompt/${promptId}`);
+        const data = await response.json();
 
-      setPost({
-        prompt: data.prompt,
-        tag: data.tag,
-      });
+        setPost({
+          prompt: data.prompt,
+          tag: data.tag,
+        });
+      } catch (error) {
+        console.log(error);
+      }
     };
 
+    // Check if promptId exists before fetching prompt details
     if (promptId) getPromptDetails();
   }, [promptId]);
 
@@ -56,15 +76,18 @@ const UpdatePrompt = () => {
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Form
-        type="Upravit"
-        post={post}
-        setPost={setPost}
-        submitting={submitting}
-        handleSubmit={updatePrompt}
-      />
-    </Suspense>
+    <div>
+      <Searchbar />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Form
+          type="Upravit"
+          post={post}
+          setPost={setPost}
+          submitting={submitting}
+          handleSubmit={updatePrompt}
+        />
+      </Suspense>
+    </div>
   );
 };
 
