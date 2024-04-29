@@ -1,12 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, Suspense } from "next/navigation"; // Import Suspense from next/navigation
+import { useRouter, useSearchParams, Suspense } from "next/navigation"; // Import Suspense from next/navigation
 
 import Form from "@components/Form";
 
 const UpdatePrompt = () => {
   const router = useRouter();
+  
+  // Wrap the useSearchParams() hook with a Suspense boundary
+  const searchParams = useSuspenseSearchParams();
+
+  const promptId = searchParams.get("id");
 
   const [post, setPost] = useState({ prompt: "", tag: "" });
   const [submitting, setIsSubmitting] = useState(false);
@@ -51,7 +56,7 @@ const UpdatePrompt = () => {
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}> {/* Add Suspense boundary here */}
+    <Suspense fallback={<div>Loading...</div>}>
       <Form
         type="Upravit"
         post={post}
