@@ -1,45 +1,30 @@
 "use client";
 
-import { Suspense } from "react"; // Import Suspense
-import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams, Suspense } from "next/navigation"; // Import Suspense from next/navigation
+
+import Form from "@components/Form";
 
 const UpdatePrompt = () => {
   const router = useRouter();
-  const [promptId, setPromptId] = useState(null);
-  
-  // Wrap the useSearchParams() call with a Suspense boundary
-  const searchParams = useSuspenseSearchParams();
-
-  useEffect(() => {
-    // Use searchParams.get() safely
-    const id = searchParams.get("id");
-    if (id) {
-      setPromptId(id);
-    }
-  }, [searchParams]);
+  const searchParams = useSearchParams();
+  const promptId = searchParams.get("id");
 
   const [post, setPost] = useState({ prompt: "", tag: "" });
   const [submitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const getPromptDetails = async () => {
-      if (!promptId) return; // Exit early if promptId is not available
+      const response = await fetch(`/api/prompt/${promptId}`);
+      const data = await response.json();
 
-      try {
-        const response = await fetch(`/api/prompt/${promptId}`);
-        const data = await response.json();
-
-        setPost({
-          prompt: data.prompt,
-          tag: data.tag,
-        });
-      } catch (error) {
-        console.log(error);
-      }
+      setPost({
+        prompt: data.prompt,
+        tag: data.tag,
+      });
     };
 
-    getPromptDetails();
+    if (promptId) getPromptDetails();
   }, [promptId]);
 
   const updatePrompt = async (e) => {
@@ -68,7 +53,7 @@ const UpdatePrompt = () => {
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}> {/* Wrap with Suspense */}
+    <Suspense fallback={<div>Loading...</div>}> {/* Add Suspense boundary here */}
       <Form
         type="Upravit"
         post={post}
@@ -78,6 +63,6 @@ const UpdatePrompt = () => {
       />
     </Suspense>
   );
-}
+};
 
 export default UpdatePrompt;
