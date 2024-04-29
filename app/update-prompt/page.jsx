@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-
-import Form from "@components/Form";
+import { Suspense } from "react"; // Import Suspense
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 
 const UpdatePrompt = () => {
   const router = useRouter();
@@ -69,14 +68,16 @@ const UpdatePrompt = () => {
   };
 
   return (
-    <Form
-      type="Upravit"
-      post={post}
-      setPost={setPost}
-      submitting={submitting}
-      handleSubmit={updatePrompt}
-    />
+    <Suspense fallback={<div>Loading...</div>}> {/* Wrap with Suspense */}
+      <Form
+        type="Upravit"
+        post={post}
+        setPost={setPost}
+        submitting={submitting}
+        handleSubmit={updatePrompt}
+      />
+    </Suspense>
   );
-};
+}
 
 export default UpdatePrompt;
