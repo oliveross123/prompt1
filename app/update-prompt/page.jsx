@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams, Suspense } from "next/navigation"; // Import Suspense from next/navigation
+import { useRouter, Suspense } from "next/navigation"; // Import Suspense from next/navigation
 
 import Form from "@components/Form";
 
