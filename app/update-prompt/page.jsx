@@ -7,24 +7,40 @@ import Form from "@components/Form";
 
 const UpdatePrompt = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const promptId = searchParams.get("id");
+  const [promptId, setPromptId] = useState(null);
+  
+  // Wrap the useSearchParams() call with a Suspense boundary
+  const searchParams = useSuspenseSearchParams();
 
-  const [post, setPost] = useState({ prompt: "", tag: "", });
+  useEffect(() => {
+    // Use searchParams.get() safely
+    const id = searchParams.get("id");
+    if (id) {
+      setPromptId(id);
+    }
+  }, [searchParams]);
+
+  const [post, setPost] = useState({ prompt: "", tag: "" });
   const [submitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const getPromptDetails = async () => {
-      const response = await fetch(`/api/prompt/${promptId}`);
-      const data = await response.json();
+      if (!promptId) return; // Exit early if promptId is not available
 
-      setPost({
-        prompt: data.prompt,
-        tag: data.tag,
-      });
+      try {
+        const response = await fetch(`/api/prompt/${promptId}`);
+        const data = await response.json();
+
+        setPost({
+          prompt: data.prompt,
+          tag: data.tag,
+        });
+      } catch (error) {
+        console.log(error);
+      }
     };
 
-    if (promptId) getPromptDetails();
+    getPromptDetails();
   }, [promptId]);
 
   const updatePrompt = async (e) => {
@@ -54,7 +70,7 @@ const UpdatePrompt = () => {
 
   return (
     <Form
-      type='Upravit'
+      type="Upravit"
       post={post}
       setPost={setPost}
       submitting={submitting}
