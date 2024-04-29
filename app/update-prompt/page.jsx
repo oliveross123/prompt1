@@ -12,7 +12,6 @@ const UpdatePrompt = () => {
 
   // Wrap the useSearchParams() hook with a Suspense boundary
   const Search = () => {
-    const searchParams = useSearchParams();
 
     return <input placeholder="Search..." />;
   };
