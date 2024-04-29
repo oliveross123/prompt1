@@ -2,14 +2,12 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation"; // Import useSearchParams from next/dist/client/router
 
-import Form from "@components/Form";
+import Form from "@components/Form"; // Import the Form component
 
 const UpdatePrompt = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const promptId = searchParams.get("id");
+  const promptId = router.query?.id || ""; // Check if router.query is defined before accessing id
 
   const [post, setPost] = useState({ prompt: "", tag: "" });
   const [submitting, setIsSubmitting] = useState(false);
@@ -17,20 +15,22 @@ const UpdatePrompt = () => {
   useEffect(() => {
     const getPromptDetails = async () => {
       try {
-        const response = await fetch(`/api/prompt/${promptId}`);
-        const data = await response.json();
+        if (promptId) {
+          const response = await fetch(`/api/prompt/${promptId}`);
+          const data = await response.json();
 
-        setPost({
-          prompt: data.prompt,
-          tag: data.tag,
-        });
+          setPost({
+            prompt: data.prompt,
+            tag: data.tag,
+          });
+        }
       } catch (error) {
         console.log(error);
       }
     };
 
-    // Check if promptId exists before fetching prompt details
-    if (promptId) getPromptDetails();
+    // Fetch prompt details only if promptId exists
+    getPromptDetails();
   }, [promptId]);
 
   const updatePrompt = async (e) => {
@@ -61,7 +61,7 @@ const UpdatePrompt = () => {
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>
-        <Form
+        <Form // Use the imported Form component
           type="Edit"
           post={post}
           setPost={setPost}
