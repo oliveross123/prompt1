@@ -1,31 +1,28 @@
-"use client";
-
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from 'react'
+import { useRouter } from "next/router"; // Import useRouter from next/router
+import { useSearchParams } from "next/dist/client/router"; // Import useSearchParams from next/dist/client/router
+import { Suspense } from "react";
 
 import Form from "@components/Form";
 
 const UpdatePrompt = () => {
   const router = useRouter();
-  
-  // Wrap the useSearchParams() hook with a Suspense boundary
+
   const Search = () => {
-    const searchParams = useSearchParams()
-   
-    return <input placeholder="Search..." />
-  }
+    const searchParams = useSearchParams(); // Use useSearchParams inside the Search component
+
+    return <input placeholder="Search..." />;
+  };
 
   const Searchbar = () => {
     return (
       <Suspense fallback={<div>Loading...</div>}>
         <Search />
       </Suspense>
-    )
-  }
+    );
+  };
 
-  // Retrieve promptId inside the component
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams(); // Move useSearchParams inside the component body
   const promptId = searchParams.get("id");
 
   const [post, setPost] = useState({ prompt: "", tag: "" });
@@ -46,7 +43,6 @@ const UpdatePrompt = () => {
       }
     };
 
-    // Check if promptId exists before fetching prompt details
     if (promptId) getPromptDetails();
   }, [promptId]);
 
