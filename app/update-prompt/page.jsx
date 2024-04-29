@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams, Suspense } from "next/navigation"; // Import Suspense from next/navigation
+import { useRouter, Suspense, useSearchParams } from "next/navigation"; // Correct import for useSearchParams
 
 import Form from "@components/Form";
 
@@ -9,7 +9,7 @@ const UpdatePrompt = () => {
   const router = useRouter();
   
   // Wrap the useSearchParams() hook with a Suspense boundary
-  const searchParams = useSuspenseSearchParams();
+  const searchParams = useSearchParams();
 
   const promptId = searchParams.get("id");
 
