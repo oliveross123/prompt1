@@ -41,7 +41,7 @@ const Feed = () => {
   return (
     <section className='feed'>
       <form className='relative w-full flex-center'>
-        <input type='text' placeholder='Search for tag or username'
+        <input type='text' placeholder='Hledejte podle tagů nebo uživatelského jména'
         value={searchText}
         onChange={handleSearchChange}
         required
